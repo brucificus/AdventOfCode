@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <AnalysisLevel>5.0</AnalysisLevel>
+    <NoWarn>$(NoWarn);SA1200;SA1633;SA1600</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+</Project>
