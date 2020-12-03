@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Shared
 {
@@ -20,5 +21,7 @@ namespace Shared
                                     p => self.Where(c => p.a != c && p.b != c && p.b <= c)
                                     .Select(c => (p.a, p.b, c))));
         }
+
+        public static BigInteger Multiply(this IEnumerable<int> self) => self.Aggregate(BigInteger.One, (p, c) => p * c);
     }
 }

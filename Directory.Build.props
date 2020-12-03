@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <AnalysisLevel>5.0</AnalysisLevel>
-    <NoWarn>$(NoWarn);SA1200;SA1633;SA1600</NoWarn>
+    <NoWarn>$(NoWarn);SA1200;SA1633;SA1600;SA1101</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OneOf" Version="3.0.162" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
   </ItemGroup>
 
