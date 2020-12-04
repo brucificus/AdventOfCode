@@ -9,5 +9,15 @@ namespace Shared
         {
             return regex.Split(self);
         }
+
+        public static bool IsMatch(this string self, Regex regex)
+        {
+            return regex.IsMatch(self);
+        }
+
+        public static MatchCollection Matches(this string self, Regex regex)
+        {
+            return regex.Matches(self);
+        }
     }
 }
