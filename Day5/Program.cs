@@ -50,3 +50,8 @@ var seatCoordinatesWithIdDescending = from s in seatCoordinates
 var part1Answer = seatCoordinatesWithIdDescending.First().seatId;
 
 await Out.WriteLineAsync($"Part 1 Answer: {part1Answer}");
+
+var seatsPresent = seatCoordinatesWithIdDescending.Select(s => s.seatId).ToHashSet();
+var part2Answer = seatsPresent.First(s => !seatsPresent.Contains(s - 1) && seatsPresent.Contains(s - 2)) - 1;
+
+await Out.WriteLineAsync($"Part 2 Answer: {part2Answer}");
