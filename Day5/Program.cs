@@ -1,57 +1,76 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using static System.Console;
+using System.Threading.Tasks;
+using NUnit.Framework;
 
-var input = (await System.IO.File.ReadAllLinesAsync("input.txt")).Where(l => l.Length == 10);
-
-var seatCoordinates = input.Select(l => (rowCoordinate: l.Substring(0, 7), columnCoordinate: l.Substring(7, 3)));
-
-int calculateRowValue(string rowCoordinate)
+[TestFixture]
+public class Day5
 {
-    (int, int) aggregate((int, int) previous, char current)
+    private IEnumerable<string> input;
+
+    [SetUp]
+    public async Task SetUp()
     {
-        var halfSize = (previous.Item2 - previous.Item1) / 2;
-        return current switch
-        {
-            'F' => (previous.Item1, previous.Item1 + halfSize),
-            'B' => (previous.Item1 + halfSize + 1, previous.Item2),
-            _ => throw new ArgumentException(nameof(rowCoordinate))
-        };
+        input = (await System.IO.File.ReadAllLinesAsync("input.txt")).Where(l => l.Length == 10);
     }
 
-    var valueRange = ((int)0, (int)127);
-    return rowCoordinate.Aggregate(valueRange, aggregate).Item1;
-}
-
-int calculateColumnValue(string columnCoordinate)
-{
-    (int, int) aggregate((int, int) previous, char current)
+    [Test(ExpectedResult = 908)]
+    public int Part1()
     {
-        var halfSize = (previous.Item2 - previous.Item1) / 2;
-        return current switch
-        {
-            'L' => (previous.Item1, previous.Item1 + halfSize),
-            'R' => (previous.Item1 + halfSize + 1, previous.Item2),
-            _ => throw new ArgumentException(nameof(columnCoordinate))
-        };
+        return GetSeatCoordinatesWithIdsDescending().First().seatId;
     }
 
-    var valueRange = ((int)0, (int)7);
-    return columnCoordinate.Aggregate(valueRange, aggregate).Item1;
+    [Test(ExpectedResult = 619)]
+    public int Part2()
+    {
+        var seatsPresent = GetSeatCoordinatesWithIdsDescending().Select(s => s.seatId).ToHashSet();
+        return seatsPresent.First(s => !seatsPresent.Contains(s - 1) && seatsPresent.Contains(s - 2)) - 1;
+    }
+
+    private IEnumerable<(string rowCoordinate, string columnCoordinate, int seatId)> GetSeatCoordinatesWithIdsDescending()
+    {
+        var seatCoordinates = input.Select(l => (rowCoordinate: l.Substring(0, 7), columnCoordinate: l.Substring(7, 3)));
+
+        int calculateRowValue(string rowCoordinate)
+        {
+            (int, int) aggregate((int, int) previous, char current)
+            {
+                var halfSize = (previous.Item2 - previous.Item1) / 2;
+                return current switch
+                {
+                    'F' => (previous.Item1, previous.Item1 + halfSize),
+                    'B' => (previous.Item1 + halfSize + 1, previous.Item2),
+                    _ => throw new ArgumentException(nameof(rowCoordinate))
+                };
+            }
+
+            var valueRange = ((int)0, (int)127);
+            return rowCoordinate.Aggregate(valueRange, aggregate).Item1;
+        }
+
+        int calculateColumnValue(string columnCoordinate)
+        {
+            (int, int) aggregate((int, int) previous, char current)
+            {
+                var halfSize = (previous.Item2 - previous.Item1) / 2;
+                return current switch
+                {
+                    'L' => (previous.Item1, previous.Item1 + halfSize),
+                    'R' => (previous.Item1 + halfSize + 1, previous.Item2),
+                    _ => throw new ArgumentException(nameof(columnCoordinate))
+                };
+            }
+
+            var valueRange = ((int)0, (int)7);
+            return columnCoordinate.Aggregate(valueRange, aggregate).Item1;
+        }
+
+        return from s in seatCoordinates
+               let rowNumber = calculateRowValue(s.rowCoordinate)
+               let columnNumber = calculateColumnValue(s.columnCoordinate)
+               let seatId = (rowNumber * 8) + columnNumber
+               orderby seatId descending
+               select (s.rowCoordinate, s.columnCoordinate, seatId);
+    }
 }
-
-var seatCoordinatesWithIdDescending = from s in seatCoordinates
-                                let rowNumber = calculateRowValue(s.rowCoordinate)
-                                let columnNumber = calculateColumnValue(s.columnCoordinate)
-                                let seatId = (rowNumber * 8) + columnNumber
-                                orderby seatId descending
-                                select (s.rowCoordinate, s.columnCoordinate, seatId);
-
-var part1Answer = seatCoordinatesWithIdDescending.First().seatId;
-
-await Out.WriteLineAsync($"Part 1 Answer: {part1Answer}");
-
-var seatsPresent = seatCoordinatesWithIdDescending.Select(s => s.seatId).ToHashSet();
-var part2Answer = seatsPresent.First(s => !seatsPresent.Contains(s - 1) && seatsPresent.Contains(s - 2)) - 1;
-
-await Out.WriteLineAsync($"Part 2 Answer: {part2Answer}");
