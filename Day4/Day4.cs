@@ -63,9 +63,7 @@ public class Day4
 
     private IEnumerable<ImmutableDictionary<string, string>> Part1ValidRecords()
     {
-        var emptyLines = new Regex("^(?:(?:\r ?\n |\r))+", RegexOptions.Multiline);
-
-        var records = (from block in input.Split(emptyLines)
+        var records = (from block in input.SplitOnEmptyLines()
                        let blockPieces = block.Split(new Regex("\\s+")).Where(s => !string.IsNullOrWhiteSpace(s))
                        let parsedBlockPieces =
                            from blockPiece in blockPieces
