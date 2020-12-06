@@ -21,12 +21,7 @@ public class Day6
     [Test(ExpectedResult = 6726)]
     public int Part1()
     {
-        var passengerGroups = (from block in input.SplitOnEmptyLines()
-                               let records = (from line in block.SplitOnNewlines()
-                                              select new Passenger(line.ToImmutableHashSet()))
-                                             .ToImmutableList()
-                               select new PassengerGroup(records))
-                              .ToImmutableList();
+        var passengerGroups = ParsePassengerGroups();
         var passengerGroupSummaries =
                                 (from passengerGroup in passengerGroups
                                  let summaryData = passengerGroup.passengers.Aggregate(ImmutableHashSet<char>.Empty, (p, c) => p.Union(c.answers))
@@ -35,8 +30,27 @@ public class Day6
         return passengerGroupSummaries.Sum(pgs => pgs.answers.Count);
     }
 
-    [Test]
-    public void Part2()
+    [Test(ExpectedResult = 3316)]
+    public int Part2()
     {
+        var passengerGroups = ParsePassengerGroups();
+        var passengerGroupSummaries =
+                                (from passengerGroup in passengerGroups
+                                 let firstPassenger = passengerGroup.passengers.First()
+                                 let remainingPassengers = passengerGroup.passengers.Skip(1)
+                                 let summaryData = remainingPassengers.Aggregate(firstPassenger.answers, (p, c) => p.Intersect(c.answers))
+                                 select new PassengerGroupSummary(summaryData))
+                                .ToImmutableList();
+        return passengerGroupSummaries.Sum(pgs => pgs.answers.Count);
+    }
+
+    private ImmutableList<PassengerGroup> ParsePassengerGroups()
+    {
+        return (from block in input.SplitOnEmptyLines()
+                let records = (from line in block.Trim().SplitOnNewlines()
+                               select new Passenger(line.ToImmutableHashSet()))
+                              .ToImmutableList()
+                select new PassengerGroup(records))
+                              .ToImmutableList();
     }
 }
