@@ -22,6 +22,11 @@ namespace Shared
                                     .Select(c => (p.a, p.b, c))));
         }
 
-        public static BigInteger Multiply(this IEnumerable<int> self) => self.Aggregate(BigInteger.One, (p, c) => p * c);
+        public static BigInteger? Multiply(this IEnumerable<int> self)
+        {
+            var (product, run) = self.Aggregate((product: BigInteger.One, run: false), (p, c) => (p.product * c, true));
+
+            return run ? product : null;
+        }
     }
 }
