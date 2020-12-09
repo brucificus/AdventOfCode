@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -6,9 +7,14 @@ namespace Shared
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<(int, int)> SelectUniquePairs(this IEnumerable<int> self)
+        public static IEnumerable<(T, T)> SelectUniquePairs<T>(this IEnumerable<T> self)
+            where T : IComparable<T> =>
+            self.SelectUniquePairs(i => i);
+
+        public static IEnumerable<(T, T)> SelectUniquePairs<T, TKey>(this IEnumerable<T> self, Func<T, TKey> keySelector)
+            where TKey : IComparable<TKey>
         {
-            return self.SelectMany(a => self.Where(b => a != b && a <= b).Select(b => (a, b)));
+            return self.SelectMany(a => self.Where(b => keySelector(a).CompareTo(keySelector(b)) < 0).Select(b => (a, b)));
         }
 
         public static IEnumerable<(int, int, int)> SelectUniqueTriplets(this IEnumerable<int> self)
