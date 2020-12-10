@@ -39,5 +39,10 @@ namespace Shared
         {
             return self.Aggregate(BigInteger.Zero, (p, c) => p + c);
         }
+
+        public static BigInteger Sum<T>(this IEnumerable<T> self, Func<T, BigInteger> selector)
+        {
+            return self.Aggregate(BigInteger.Zero, (p, c) => p + selector(c));
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using QuickGraph;
@@ -23,6 +24,17 @@ namespace Shared
             }
 
             return workingGraph;
+        }
+
+        public static IEnumerable<TResult> Execute<TInput, TResult>(this TryFunc<TInput, IEnumerable<TResult>> tryFunc, TInput input)
+        {
+            if (tryFunc(input, out var result))
+            {
+                return result;
+            } else
+            {
+                return Enumerable.Empty<TResult>();
+            }
         }
     }
 }
