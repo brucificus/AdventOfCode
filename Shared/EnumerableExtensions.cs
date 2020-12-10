@@ -34,5 +34,10 @@ namespace Shared
 
             return run ? product : null;
         }
+
+        public static BigInteger Sum(this IEnumerable<BigInteger> self)
+        {
+            return self.Aggregate(BigInteger.Zero, (p, c) => p + c);
+        }
     }
 }
