@@ -59,6 +59,19 @@ namespace Shared.Mapping
             return new DenseFullyBoundedIntegralPlane<TCell>(resultRowMajorStorage);
         }
 
+        public IEnumerable<(Vector2<int> coordinate, TCell cell)> CastRay(Vector2<int> originCoordinate, Vector2<int> step)
+        {
+            Vector2<int> Add(Vector2<int> left, Vector2<int> right) => new Vector2<int>(left.x + right.x, left.y + right.y);
+
+            for (
+                var coordinate = Add(originCoordinate, step);
+                coordinate.x >= Left && coordinate.x <= Right && coordinate.y >= Bottom && coordinate.y <= Top;
+                coordinate = Add(coordinate, step))
+            {
+                yield return (coordinate, _rowMajorGrid[coordinate.y][coordinate.x]);
+            }
+        }
+
         public bool Equals(IPopulatedFullyBoundedPlane<int, TCell> other)
         {
             if (other is null)

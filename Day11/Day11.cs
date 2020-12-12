@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Shared.Mapping;
+using Map = Shared.Mapping.IPopulatedFullyBoundedPlane<int, char>;
 
 public class Day11
 {
-    private IPopulatedFullyBoundedPlane<int, char> _initialMap;
+    private readonly static IEnumerable<Vector2<int>> VisibilityRuleDirections = Enumerable.Range(-1, 3).SelectMany(y => Enumerable.Range(-1, 3).Where(x => y != 0 || x != 0).Select(x => new Vector2<int>(x, y))).ToArray();
+
+    private Map _initialMap;
     const char emptySeat = 'L';
     const char occupiedSeat = '#';
     const char floor = '.';
@@ -21,12 +24,16 @@ public class Day11
     [Test(ExpectedResult = 2113)]
     public int Part1()
     {
-        var x = _initialMap.Count(i => i.cell == '.');
-
-        return SeatingIterations().Last().Count(c => c.cell == occupiedSeat);
+        return SeatingIterations(ProximitySeatingRule).Last().Count(c => c.cell == occupiedSeat);
     }
 
-    private IEnumerable<IPopulatedFullyBoundedPlane<int, char>> SeatingIterations()
+    [Test(ExpectedResult = 1865)]
+    public int Part2()
+    {
+        return SeatingIterations(VisibilitySeatingRule).Last().Count(c => c.cell == occupiedSeat);
+    }
+
+    private IEnumerable<Map> SeatingIterations(Func<Map, Map> iterationRule)
     {
         int i = 0;
         var previousSeatingIteration = _initialMap;
@@ -37,7 +44,7 @@ public class Day11
         while (true)
         {
             i++;
-            var newSeatingIteration = IterateSeatingRulesOnce(previousSeatingIteration);
+            var newSeatingIteration = iterationRule(previousSeatingIteration);
             Print(i, newSeatingIteration);
 
             yield return newSeatingIteration;
@@ -51,7 +58,29 @@ public class Day11
         }
     }
 
-    private static IPopulatedFullyBoundedPlane<int, char> IterateSeatingRulesOnce(IPopulatedFullyBoundedPlane<int, char> input)
+    private static Map VisibilitySeatingRule(Map input)
+    {
+        var newMapCells =
+             from center in input
+             let seenSeats = from direction in VisibilityRuleDirections
+                             let ray = input.CastRay(center.coordinate, direction)
+                             let firstSeatInRay = ray.Cast<(Vector2<int> coordinate, char cell)?>().FirstOrDefault(c => c.Value.cell != floor)
+                             where firstSeatInRay.HasValue
+                             select firstSeatInRay.Value
+             let currentSeatState = center.cell
+             let seenSeatsOccupied = seenSeats.Count(c => c.cell == occupiedSeat)
+             let newSeatState = currentSeatState switch
+             {
+                 emptySeat => seenSeatsOccupied == 0 ? occupiedSeat : currentSeatState,
+                 occupiedSeat => seenSeatsOccupied >= 5 ? emptySeat : currentSeatState,
+                 floor => floor,
+                 _ => throw new InvalidOperationException()
+             }
+             select (center.coordinate, cell: newSeatState);
+        return DenseFullyBoundedIntegralPlane<char>.FromTuples(newMapCells);
+    }
+
+    private static Map ProximitySeatingRule(Map input)
     {
         var newMapCells =
              from window in input.Scan(new Vector2<int>(3, 3))
@@ -70,7 +99,7 @@ public class Day11
         return DenseFullyBoundedIntegralPlane<char>.FromTuples(newMapCells);
     }
 
-    private static void Print(int i, IPopulatedFullyBoundedPlane<int, char> map)
+    private static void Print(int i, Map map)
     {
         TestContext.Out.WriteLine(i);
         TestContext.Out.WriteLine(Enumerable.Repeat('=', map.Size.x).ToArray());
