@@ -1,0 +1,61 @@
+<Project>
+
+  <PropertyGroup>
+    <AnalysisLevel>6.0</AnalysisLevel>
+    <Nullable>enable</Nullable>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AdventOfCodeYear>Y2021</AdventOfCodeYear>
+    <AssemblyName>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.Interactive" Version="5.0.0" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="OneOf" Version="3.0.203" />
+    <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.0.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Y2020\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('input.txt')">
+    <None Include="input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Numerics" />
+    <Using Include="OneOf" />
+    <Using Include="AdventOfCode.Y2020.Shared" />
+    <Using Include="AdventOfCode.Y2020.Shared.Hosting.NUnit" />
+    <Using Include="AdventOfCode.$(AdventOfCodeYear).Shared" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+</Project>
