@@ -16,11 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.203" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="OneOf" Version="3.0.203" />
     <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
   </ItemGroup>
 
@@ -31,7 +32,6 @@
   <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.0.0" />
-    <PackageReference Include="NUnit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
   </ItemGroup>
 
@@ -41,15 +41,16 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
-    <Using Include="NUnit.Framework" />
-  </ItemGroup>
-
   <ItemGroup>
     <Using Include="System.Collections.Immutable" />
     <Using Include="System.Numerics" />
     <Using Include="OneOf" />
     <Using Include="AdventOfCode.$(AdventOfCodeYear).Shared" />
+    <Using Include="AdventOfCode.Y2020.Shared.Hosting.NUnit" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <Using Include="NUnit.Framework" />
   </ItemGroup>
 
 </Project>

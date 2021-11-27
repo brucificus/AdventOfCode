@@ -1,6 +1,6 @@
-namespace AdventOfCode.Y2020.Day13;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public record Day13
+public partial class Program
 {
     public readonly record struct Any;
     private IReadOnlyList<string> inputLines = null!;

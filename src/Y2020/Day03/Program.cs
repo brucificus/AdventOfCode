@@ -1,10 +1,10 @@
 using AdventOfCode.Y2020.Shared.Mapping;
 using TobogganPosition = AdventOfCode.Y2020.Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette;
 
-namespace AdventOfCode.Y2020.Day03;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
 [TestFixture]
-public class Day3
+public partial class Program
 {
     const char tree = '#';
     private ISemisesquiBoundedInfiniteIntegralPlane<char> map = null!;

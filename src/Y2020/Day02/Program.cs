@@ -1,7 +1,7 @@
-namespace AdventOfCode.Y2020.Day02;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
 [TestFixture]
-public class Day2
+public partial class Program
 {
     private IReadOnlyList<(int[] policyNumbers, char policyCharacter, string password)> inputEntries = null!;
 

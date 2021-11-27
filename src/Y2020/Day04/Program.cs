@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 
-namespace AdventOfCode.Y2020.Day04;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day4
+public partial class Program
 {
     private string input = null!;
 

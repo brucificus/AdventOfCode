@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 using QuickGraph;
 using QuickGraph.Algorithms;
 
-namespace AdventOfCode.Y2020.Day07;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day7
+public partial class Program
 {
     private IReadOnlyList<string> inputLines = null!;
     public record BagColor(string Value);

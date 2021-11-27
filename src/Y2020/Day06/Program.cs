@@ -1,6 +1,6 @@
-namespace AdventOfCode.Y2020.Day06;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day6
+public partial class Program
 {
     private IReadOnlyList<string> blocks = null!;
 

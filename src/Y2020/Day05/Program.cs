@@ -1,7 +1,7 @@
-namespace AdventOfCode.Y2020.Day05;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
 [TestFixture]
-public class Day5
+public partial class Program
 {
     private IReadOnlyList<string> input = null!;
 

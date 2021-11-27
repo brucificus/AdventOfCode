@@ -1,6 +1,6 @@
-namespace AdventOfCode.Y2020.Day09;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day9
+public partial class Program
 {
     private IReadOnlyCollection<string> inputLines = null!;
 

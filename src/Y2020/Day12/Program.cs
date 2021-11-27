@@ -1,8 +1,8 @@
-using OrientationAdjustmentInstruction = OneOf.OneOf<AdventOfCode.Y2020.Day12.Day12.MoveNorth, AdventOfCode.Y2020.Day12.Day12.MoveSouth, AdventOfCode.Y2020.Day12.Day12.MoveEast, AdventOfCode.Y2020.Day12.Day12.MoveWest, AdventOfCode.Y2020.Day12.Day12.TurnLeft, AdventOfCode.Y2020.Day12.Day12.TurnRight, AdventOfCode.Y2020.Day12.Day12.MoveForward>;
+using OrientationAdjustmentInstruction = OneOf.OneOf<Program.MoveNorth, Program.MoveSouth, Program.MoveEast, Program.MoveWest, Program.TurnLeft, Program.TurnRight, Program.MoveForward>;
 
-namespace AdventOfCode.Y2020.Day12;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day12
+public partial class Program
 {
     private static readonly float PiOver180 = (float)(Math.PI / 180d);
 

@@ -1,9 +1,9 @@
 using AdventOfCode.Y2020.Shared.Mapping;
 using Map = AdventOfCode.Y2020.Shared.Mapping.IPopulatedFullyBoundedPlane<int, char>;
 
-namespace AdventOfCode.Y2020.Day11;
+await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-public class Day11
+public partial class Program
 {
     private static readonly IEnumerable<Vector2<int>> VisibilityRuleDirections = Enumerable.Range(-1, 3).SelectMany(y => Enumerable.Range(-1, 3).Where(x => y != 0 || x != 0).Select(x => new Vector2<int>(x, y))).ToArray();
 
