@@ -38,6 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Day13", "src\Y2020\Day13\Da
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Y2020", "Y2020", "{91A739B1-AD66-4590-92DE-B68827913C0D}"
 	ProjectSection(SolutionItems) = preProject
+		src\Y2020\.editorconfig = src\Y2020\.editorconfig
 		src\Y2020\Directory.Build.props = src\Y2020\Directory.Build.props
 	EndProjectSection
 EndProject
