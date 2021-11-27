@@ -43,6 +43,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Y2020", "Y2020", "{91A739B1
 		src\Y2020\Directory.Build.props = src\Y2020\Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{021E86AA-D3A1-4DEB-B5E4-1F19C3342B9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{A8C1E20F-8E4C-45E7-B995-4725D047CF54}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +136,7 @@ Global
 		{626A2E5E-2BCD-40D4-B92D-7341D81DC5DD} = {91A739B1-AD66-4590-92DE-B68827913C0D}
 		{BC06E0F2-F609-48D4-B143-99C4C6A26B6B} = {91A739B1-AD66-4590-92DE-B68827913C0D}
 		{1109A6AF-FCF6-4D98-86DB-63F5B3BE25AC} = {91A739B1-AD66-4590-92DE-B68827913C0D}
+		{A8C1E20F-8E4C-45E7-B995-4725D047CF54} = {021E86AA-D3A1-4DEB-B5E4-1F19C3342B9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C85848C-FD16-43CC-B379-C24D79AA348C}
