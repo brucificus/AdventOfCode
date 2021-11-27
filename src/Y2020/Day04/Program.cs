@@ -9,7 +9,7 @@ public partial class Program
     [SetUp]
     public async Task SetUp()
     {
-        input = await new InputFileFacadeFacade().ReadAllTextAsync();
+        input = await new InputFileFacade().ReadAllTextAsync();
     }
 
     [Test(ExpectedResult = 170)]

@@ -14,7 +14,7 @@ public partial class Program
     [SetUp]
     public async Task SetUp()
     {
-        var lines = await new InputFileFacadeFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrWhiteSpace);
+        var lines = await new InputFileFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrWhiteSpace);
         map = TextualSemisesquiBoundedInfiniteIntegralPlane.FromLines(lines);
         part1Slope = new Slope(3, 1);
         tobogganPosition = map.Origin;

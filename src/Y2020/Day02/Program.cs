@@ -8,7 +8,7 @@ public partial class Program
     [SetUp]
     public async Task SetUp()
     {
-        inputEntries = await new InputFileFacadeFacade()
+        inputEntries = await new InputFileFacade()
             .ReadAllLinesAsync()
             .WhereNot(string.IsNullOrEmpty)
             .Select(v => v.Split(' '))

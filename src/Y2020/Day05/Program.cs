@@ -8,7 +8,7 @@ public partial class Program
     [SetUp]
     public async Task SetUp()
     {
-        input = await new InputFileFacadeFacade().ReadAllLinesAsync().Where(l => l.Length == 10);
+        input = await new InputFileFacade().ReadAllLinesAsync().Where(l => l.Length == 10);
     }
 
     [Test(ExpectedResult = 908)]

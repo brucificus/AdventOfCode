@@ -19,7 +19,7 @@ public partial class Program
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
+        inputLines = await new InputFileFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = 274)]

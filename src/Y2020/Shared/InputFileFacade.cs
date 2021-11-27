@@ -14,7 +14,7 @@ public abstract record InputFileFacadeBase()
         await System.IO.File.ReadAllTextAsync(File.FullName, cancellationToken);
 }
 
-public sealed record InputFileFacadeFacade() : InputFileFacadeBase()
+public sealed record InputFileFacade() : InputFileFacadeBase()
 {
     public Lazy<Task<TResult>> LazilyAwait<TResult>(Func<InputFileFacadeBase, Task<TResult>> action) =>
         new(async () => await action(this));

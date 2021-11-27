@@ -11,7 +11,7 @@ public partial class Program
     [SetUp]
     public async Task Setup()
     {
-        blocks = await new InputFileFacadeFacade().ReadAllTextAsync().SplitOnEmptyLines();
+        blocks = await new InputFileFacade().ReadAllTextAsync().SplitOnEmptyLines();
     }
 
     [Test(ExpectedResult = 6726)]

@@ -8,7 +8,7 @@ public partial class Program
     [SetUp]
     public async Task SetUp()
     {
-        values = await new InputFileFacadeFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty).Select(int.Parse);
+        values = await new InputFileFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty).Select(int.Parse);
     }
 
     [Test(ExpectedResult = 786811)]

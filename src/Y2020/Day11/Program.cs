@@ -16,7 +16,7 @@ public partial class Program
     public async Task Setup()
     {
         static char ParseCell(char c) => c;
-        _initialMap = DenseFullyBoundedIntegralPlane<char>.FromLines(await new InputFileFacadeFacade().ReadAllLinesAsync(), ParseCell);
+        _initialMap = DenseFullyBoundedIntegralPlane<char>.FromLines(await new InputFileFacade().ReadAllLinesAsync(), ParseCell);
     }
 
     [Test(ExpectedResult = 2113)]
