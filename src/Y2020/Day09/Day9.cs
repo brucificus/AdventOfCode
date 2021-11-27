@@ -1,24 +1,18 @@
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Shared;
+namespace AdventOfCode.Y2020.Day09;
 
 public class Day9
 {
-    private IReadOnlyCollection<string> inputLines;
+    private IReadOnlyCollection<string> inputLines = null!;
 
-    public record InputValue(int index, BigInteger value);
-    public record ContextualizedInputValue(InputValue item, IEnumerable<InputValue> preamble);
+    public record InputValue(int Index, BigInteger Value);
+    public record ContextualizedInputValue(InputValue Item, IReadOnlyList<InputValue> Preamble);
 
     const int part1ExpectedResult = 85848519;
 
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await System.IO.File.ReadAllLinesAsync("input.txt");
+        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = part1ExpectedResult)]
@@ -28,18 +22,18 @@ public class Day9
 
         const int preambleSize = 25;
 
-        IEnumerable<InputValue> PreambleFor(InputValue item) =>
-            Enumerable.Range(item.index - preambleSize, preambleSize).Select(i => inputValues[i]);
+        IReadOnlyList<InputValue> PreambleFor(InputValue item) =>
+            Enumerable.Range(item.Index - preambleSize, preambleSize).Select(i => inputValues[i]).ToImmutableArray();
 
         var contextualizedInputValues = inputValues.Skip(preambleSize).Select(i => new ContextualizedInputValue(i, PreambleFor(i)));
 
         IEnumerable<(InputValue l, InputValue r)> CandidateAntecedentsFor(ContextualizedInputValue item) =>
-            item.preamble.SelectUniquePairs(i => i.value).Where(i => i.Item1.value + i.Item2.value == item.item.value);
+            item.Preamble.SelectUniquePairs(i => i.Value).Where(i => i.Item1.Value + i.Item2.Value == item.Item.Value);
 
         bool HasCandidateAntecedentsFor(ContextualizedInputValue item) =>
             CandidateAntecedentsFor(item).Any();
 
-        return (int)contextualizedInputValues.First(i => !HasCandidateAntecedentsFor(i)).item.value;
+        return (int)contextualizedInputValues.First(i => !HasCandidateAntecedentsFor(i)).Item.Value;
     }
 
     [Test(ExpectedResult = "13414198")]
@@ -49,15 +43,15 @@ public class Day9
 
         const int desiredSum = part1ExpectedResult;
 
-        IEnumerable<InputValue> FindContiguousRangeWithDesiredSum()
+        IReadOnlyList<InputValue> FindContiguousRangeWithDesiredSum()
         {
-            IEnumerable<InputValue> RangeOfInputValues(int start, int stop) =>
-                Enumerable.Range(start, (stop - start) + 1).Select(i => inputValues[i]);
+            IReadOnlyList<InputValue> RangeOfInputValues(int start, int stop) =>
+                Enumerable.Range(start, (stop - start) + 1).Select(i => inputValues[i]).ToImmutableArray();
 
             var rangeStart = 0;
             var rangeStop = 1;
             var range = RangeOfInputValues(rangeStart, rangeStop);
-            var sum = range.Select(i => i.value).Sum();
+            var sum = range.Select(i => i.Value).Sum();
 
             do
             {
@@ -76,7 +70,7 @@ public class Day9
                 }
 
                 range = RangeOfInputValues(rangeStart, rangeStop);
-                sum = range.Select(i => i.value).Sum();
+                sum = range.Select(i => i.Value).Sum();
             } while (sum != desiredSum);
 
             return range;
@@ -84,7 +78,7 @@ public class Day9
 
         var resultRange = FindContiguousRangeWithDesiredSum();
 
-        return (resultRange.Min(x => x.value) + resultRange.Max(x => x.value)).ToString();
+        return (resultRange.Min(x => x.Value) + resultRange.Max(x => x.Value)).ToString();
     }
 
     private IReadOnlyList<InputValue> ParseInputValues()

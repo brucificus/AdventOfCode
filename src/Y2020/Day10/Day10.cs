@@ -1,34 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using QuickGraph;
 using QuickGraph.Algorithms;
 using QuickGraph.Graphviz;
-using Shared;
+
+namespace AdventOfCode.Y2020.Day10;
 
 public class Day10
 {
-    private IReadOnlyCollection<string> inputLines;
+    private IReadOnlyCollection<string> inputLines = null!;
 
-    public record JoltageAdapter(int index, int outputJoltage);
+    public record JoltageAdapter(int Index, int OutputJoltage);
 
-    public record JoltageAdapterGraphEdge : IEdge<JoltageAdapter>
+    public record JoltageAdapterGraphEdge(JoltageAdapter Source, JoltageAdapter Target) : IEdge<JoltageAdapter>
     {
-        public JoltageAdapter Source { get; init; }
-
-        public int JoltageDifference => Target.outputJoltage - Source.outputJoltage;
-
-        public JoltageAdapter Target { get; init; }
+        public int JoltageDifference => Target.OutputJoltage - Source.OutputJoltage;
     }
 
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await System.IO.File.ReadAllLinesAsync("input.txt");
+        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = 2277)]
@@ -36,11 +26,11 @@ public class Day10
     {
         var outlet = new JoltageAdapter(-1, 0);
         var inputValues = ParseInputValues();
-        var target = new JoltageAdapter(inputValues.Max(i => i.index) + 1, inputValues.Max(i => i.outputJoltage) + 3);
+        var target = new JoltageAdapter(inputValues.Max(i => i.Index) + 1, inputValues.Max(i => i.OutputJoltage) + 3);
         var joltageAdapterGraph = CreateJoltageAdapterGraph(outlet, inputValues, target);
 
-        IEnumerable<int> ConsecutiveDifferences(IReadOnlyList<JoltageAdapter> items) =>
-            items.Buffer(2, 1).Where(b => b.Count == 2).Select(b => b[1].outputJoltage - b[0].outputJoltage);
+        static IEnumerable<int> ConsecutiveDifferences(IReadOnlyList<JoltageAdapter> items) =>
+            items.Buffer(2, 1).Where(b => b.Count == 2).Select(b => b[1].OutputJoltage - b[0].OutputJoltage);
 
         var consecutiveDifferences = ConsecutiveDifferences(joltageAdapterGraph.TopologicalSort().ToImmutableList()).ToImmutableList();
 
@@ -52,19 +42,19 @@ public class Day10
     {
         var outlet = new JoltageAdapter(-1, 0);
         var inputValues = ParseInputValues();
-        var target = new JoltageAdapter(inputValues.Max(i => i.index) + 1, inputValues.Max(i => i.outputJoltage) + 3);
+        var target = new JoltageAdapter(inputValues.Max(i => i.Index) + 1, inputValues.Max(i => i.OutputJoltage) + 3);
         var joltageAdapterGraph = CreateJoltageAdapterGraph(outlet, inputValues, target).ToBidirectionalGraph();
 
-        IEnumerable<JoltageAdapterGraphEdge> getOutEdges(JoltageAdapter ja) =>
+        IEnumerable<JoltageAdapterGraphEdge> GetOutEdges(JoltageAdapter ja) =>
             joltageAdapterGraph.TryGetOutEdges(ja, out var result) ? result : Enumerable.Empty<JoltageAdapterGraphEdge>();
-        IEnumerable<JoltageAdapterGraphEdge> getInEdges(JoltageAdapter ja) =>
+        IEnumerable<JoltageAdapterGraphEdge> GetInEdges(JoltageAdapter ja) =>
             joltageAdapterGraph.TryGetInEdges(ja, out var result) ? result : Enumerable.Empty<JoltageAdapterGraphEdge>();
 
         var successorPaths = new Dictionary<JoltageAdapter, Lazy<BigInteger>>();
         joltageAdapterGraph
             .TopologicalSort()
             .Where(ja => ja != target)
-            .Select(ja => (ja, value: new Lazy<BigInteger>(() => getOutEdges(ja).Sum(e => successorPaths[e.Target].Value), false)))
+            .Select(ja => (ja, value: new Lazy<BigInteger>(() => GetOutEdges(ja).Sum(e => successorPaths[e.Target].Value), false)))
             .ToList()
             .ForEach(i => successorPaths.Add(i.ja, i.value));
         successorPaths.Add(target, new Lazy<BigInteger>(1));
@@ -75,22 +65,22 @@ public class Day10
     private IVertexAndEdgeListGraph<JoltageAdapter, JoltageAdapterGraphEdge> CreateJoltageAdapterGraph(JoltageAdapter outlet, IReadOnlyList<JoltageAdapter> inputValues, JoltageAdapter target)
     {
         var allJoltageAdapters = inputValues.Prepend(outlet).Append(target);
-        var allJoltageAdaptersByOutputJoltage = allJoltageAdapters.ToImmutableSortedDictionary(i => i.outputJoltage, i => i);
+        var allJoltageAdaptersByOutputJoltage = allJoltageAdapters.ToImmutableSortedDictionary(i => i.OutputJoltage, i => i);
 
         var graph = new AdjacencyGraph<JoltageAdapter, JoltageAdapterGraphEdge>();
         graph.AddVertexRange(allJoltageAdapters);
 
         var edges = allJoltageAdapters
-                    .SelectMany(
-                        joltageAdapter =>
-                            Enumerable
-                                .Range(joltageAdapter.outputJoltage, 4)
-                                .Where(oj => allJoltageAdaptersByOutputJoltage.ContainsKey(oj))
-                                .Select(oj => allJoltageAdaptersByOutputJoltage[oj])
-                                .Where(ja => joltageAdapter != ja)
-                                .Select(ja => new JoltageAdapterGraphEdge() { Source = joltageAdapter, Target = ja })
-                                .ToImmutableList())
-                    .ToImmutableList();
+            .SelectMany(
+                joltageAdapter =>
+                    Enumerable
+                        .Range(joltageAdapter.OutputJoltage, 4)
+                        .Where(oj => allJoltageAdaptersByOutputJoltage.ContainsKey(oj))
+                        .Select(oj => allJoltageAdaptersByOutputJoltage[oj])
+                        .Where(ja => joltageAdapter != ja)
+                        .Select(ja => new JoltageAdapterGraphEdge(joltageAdapter, ja))
+                        .ToImmutableList())
+            .ToImmutableList();
         graph.AddEdgeRange(edges);
 
         TestContext.Out.WriteLine(graph.ToGraphviz());

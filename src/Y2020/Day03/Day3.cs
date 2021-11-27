@@ -1,22 +1,21 @@
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Shared;
-using Shared.Mapping;
-using TobogganPosition = Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette;
+using AdventOfCode.Y2020.Shared.Mapping;
+using TobogganPosition = AdventOfCode.Y2020.Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette;
+
+namespace AdventOfCode.Y2020.Day03;
 
 [TestFixture]
 public class Day3
 {
     const char tree = '#';
-    private ISemisesquiBoundedInfiniteIntegralPlane<char> map;
-    private Slope part1Slope;
-    private TobogganPosition tobogganPosition;
+    private ISemisesquiBoundedInfiniteIntegralPlane<char> map = null!;
+    private Slope part1Slope = null!;
+    private TobogganPosition tobogganPosition = null!;
 
     [SetUp]
     public async Task SetUp()
     {
-        map = await TextualSemisesquiBoundedInfiniteIntegralPlane.FromFileAsync("input.txt");
+        var lines = await new InputFileFacadeFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrWhiteSpace);
+        map = TextualSemisesquiBoundedInfiniteIntegralPlane.FromLines(lines);
         part1Slope = new Slope(3, 1);
         tobogganPosition = map.Origin;
     }

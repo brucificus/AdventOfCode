@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Shared;
+
+namespace AdventOfCode.Y2020.Day04;
 
 public class Day4
 {
-    private string input;
+    private string input = null!;
 
     [SetUp]
     public async Task SetUp()
     {
-        input = await System.IO.File.ReadAllTextAsync("input.txt");
+        input = await new InputFileFacadeFacade().ReadAllTextAsync();
     }
 
     [Test(ExpectedResult = 170)]
@@ -53,27 +48,27 @@ public class Day4
             { "pid", v => v.IsMatch(new Regex("^\\d{9}$")) },
         }.ToImmutableDictionary();
 
-        bool passesAllRequiredFieldValidations(IReadOnlyDictionary<string, string> record)
+        bool PassesAllRequiredFieldValidations(IReadOnlyDictionary<string, string> record)
         {
             return requiredFieldValidations.Keys.All(fn => requiredFieldValidations[fn](record[fn]));
         }
 
-        return Part1ValidRecords().Count(passesAllRequiredFieldValidations);
+        return Part1ValidRecords().Count(PassesAllRequiredFieldValidations);
     }
 
     private IEnumerable<ImmutableDictionary<string, string>> Part1ValidRecords()
     {
         var records = (from block in input.SplitOnEmptyLines()
-                       let blockPieces = block.Split(new Regex("\\s+")).Where(s => !string.IsNullOrWhiteSpace(s))
-                       let parsedBlockPieces =
-                           from blockPiece in blockPieces
-                           let blockPieceParts = blockPiece.Split(':')
-                           select (fieldName: blockPieceParts[0], fieldValue: blockPieceParts[1])
-                       select parsedBlockPieces.ToImmutableDictionary(t => t.fieldName, t => t.fieldValue))
-                        .ToImmutableList();
+                let blockPieces = block.Split(new Regex("\\s+")).Where(s => !string.IsNullOrWhiteSpace(s))
+                let parsedBlockPieces =
+                    from blockPiece in blockPieces
+                    let blockPieceParts = blockPiece.Split(':')
+                    select (fieldName: blockPieceParts[0], fieldValue: blockPieceParts[1])
+                select parsedBlockPieces.ToImmutableDictionary(t => t.fieldName, t => t.fieldValue))
+            .ToImmutableList();
 
         var requiredFields = new[] { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid" };
         requiredFields = requiredFields.Except(new[] { "cid" }).ToArray();
-        return records.Where(r => requiredFields.All(rf => r.ContainsKey(rf)));
+        return records.Where(r => requiredFields.All(r.ContainsKey));
     }
 }

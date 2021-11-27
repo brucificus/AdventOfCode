@@ -2,8 +2,13 @@
 
   <PropertyGroup>
     <AnalysisLevel>5.0</AnalysisLevel>
-    <AssemblyName>AdventOfCode.Y2020.$(MSBuildProjectName)</AssemblyName>
-    <RootNamespace>AdventOfCode.Y2020.$(MSBuildProjectName)</RootNamespace>
+    <Nullable>enable</Nullable>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AdventOfCodeYear>Y2020</AdventOfCodeYear>
+    <AssemblyName>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
@@ -24,15 +29,27 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.0.0" />
     <PackageReference Include="NUnit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
   </ItemGroup>
 
   <ItemGroup Condition="Exists('input.txt')">
     <None Include="input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Numerics" />
+    <Using Include="OneOf" />
+    <Using Include="AdventOfCode.$(AdventOfCodeYear).Shared" />
   </ItemGroup>
 
 </Project>

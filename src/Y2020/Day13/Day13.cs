@@ -1,21 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OneOf;
+namespace AdventOfCode.Y2020.Day13;
 
-public class Day13
+public record Day13
 {
-    public record Any;
-    private IReadOnlyList<string> inputLines;
+    public readonly record struct Any;
+    private IReadOnlyList<string> inputLines = null!;
 
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await System.IO.File.ReadAllLinesAsync("input.txt");
+        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = 171)]
@@ -24,8 +17,8 @@ public class Day13
         var (earliestTimestamp, busIds) = ParseInputForPart1();
 
         var busArrivals = busIds
-                            .Select(b => (busId: b, delay: (((earliestTimestamp / b) + 1) * b) - earliestTimestamp))
-                            .ToImmutableList();
+            .Select(b => (busId: b, delay: (((earliestTimestamp / b) + 1) * b) - earliestTimestamp))
+            .ToImmutableList();
 
         var nextArrival = busArrivals.OrderBy(b => b.delay).First();
 
@@ -39,10 +32,10 @@ public class Day13
 
         var busIdOffsets =
             (from offset in Enumerable.Range(0, busIdPatterns.Count)
-             let busIdPattern = busIdPatterns[offset]
-             where busIdPattern.Match(_ => true, _ => false)
-             let busId = (BigInteger)busIdPattern.Match(n => n, _ => throw new InvalidOperationException())
-             select (offset, busId))
+                let busIdPattern = busIdPatterns[offset]
+                where busIdPattern.Match(_ => true, _ => false)
+                let busId = (BigInteger)busIdPattern.Match(n => n, _ => throw new InvalidOperationException())
+                select (offset, busId))
             .ToImmutableArray();
 
         BigInteger position = 0;
@@ -78,7 +71,7 @@ public class Day13
                     "x" => new Any(),
                     string n => int.Parse(n),
                     _ => throw new System.InvalidOperationException()
-            }))
+                }))
 #pragma warning restore SA1119 // Statement should not use unnecessary parenthesis
             .ToImmutableList();
     }

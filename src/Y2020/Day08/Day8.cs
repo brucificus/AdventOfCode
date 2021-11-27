@@ -1,20 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using OneOf;
-using InstructionOneOf = OneOf.OneOf<Instructions.AccInstruction, Instructions.JmpInstruction, Instructions.NopInstruction>;
+namespace AdventOfCode.Y2020.Day08;
 
 public class Day8
 {
-    private IReadOnlyCollection<string> inputLines;
+    private IReadOnlyCollection<string> inputLines = null!;
 
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await System.IO.File.ReadAllLinesAsync("input.txt");
+        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = 1384)]
@@ -34,9 +27,9 @@ public class Day8
     {
         var originalInstructions = inputLines.Where(l => !string.IsNullOrWhiteSpace(l)).Select((l, i) => Instructions.ParseLine(i, l)).ToImmutableList();
 
-        static InstructionOneOf Invert(InstructionOneOf instruction)
+        static OneOf<Instructions.AccInstruction, Instructions.JmpInstruction, Instructions.NopInstruction> Invert(OneOf<Instructions.AccInstruction, Instructions.JmpInstruction, Instructions.NopInstruction> instruction)
         {
-            return instruction.Match<InstructionOneOf>(
+            return instruction.Match<OneOf<Instructions.AccInstruction, Instructions.JmpInstruction, Instructions.NopInstruction>>(
                 acc => acc,
                 jmp => new Instructions.NopInstruction(jmp.index, jmp.argument),
                 nop => new Instructions.JmpInstruction(nop.index, nop.argument));
@@ -62,7 +55,7 @@ public class Day8
         return -1;
     }
 
-    public static OneOf<NormalTermination, CycledTermination> Execute(ImmutableList<InstructionOneOf> instructions)
+    public static OneOf<NormalTermination, CycledTermination> Execute(ImmutableList<OneOf<Instructions.AccInstruction, Instructions.JmpInstruction, Instructions.NopInstruction>> instructions)
     {
         var instructionsExecuted = new HashSet<Instructions.Instruction>();
         int accumulator = 0;
@@ -94,7 +87,7 @@ public class Day8
 
 public static class Instructions
 {
-    public static InstructionOneOf ParseLine(int index, string value)
+    public static OneOf<AccInstruction, JmpInstruction, NopInstruction> ParseLine(int index, string value)
     {
         var instructionArgument = int.Parse(value.Substring(4));
         return value.Substring(0, 3) switch

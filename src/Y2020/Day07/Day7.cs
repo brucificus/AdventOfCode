@@ -1,30 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using QuickGraph;
 using QuickGraph.Algorithms;
-using Shared;
+
+namespace AdventOfCode.Y2020.Day07;
 
 public class Day7
 {
-    private IReadOnlyList<string> inputLines;
-    public record BagColor(string value);
-    public record BagGrouping(int count, BagColor color);
-    public record BagGraphEdge(BagColor inward, BagColor outward, int count) : QuickGraph.IEdge<BagColor>
+    private IReadOnlyList<string> inputLines = null!;
+    public record BagColor(string Value);
+    public record BagGrouping(int Count, BagColor Color);
+    public record BagGraphEdge(BagColor Inward, BagColor Outward, int Count) : QuickGraph.IEdge<BagColor>
     {
-        BagColor IEdge<BagColor>.Source => this.inward;
+        BagColor IEdge<BagColor>.Source => this.Inward;
 
-        BagColor IEdge<BagColor>.Target => this.outward;
+        BagColor IEdge<BagColor>.Target => this.Outward;
     }
 
     [SetUp]
     public async Task Setup()
     {
-        inputLines = await System.IO.File.ReadAllLinesAsync("input.txt");
+        inputLines = await new InputFileFacadeFacade().ReadAllLinesAsync();
     }
 
     [Test(ExpectedResult = 274)]
@@ -43,10 +38,10 @@ public class Day7
                 resultEdges ??= ImmutableList<BagGraphEdge>.Empty;
                 var allEdgesExceptLast = resultEdges.Take(resultEdges.Count() - 1);
                 var lastEdge = resultEdges.Skip(resultEdges.Count() - 1).SingleOrDefault();
-                results = allEdgesExceptLast.Aggregate(results, (p, c) => p.Add(c.inward).Add(c.outward));
+                results = allEdgesExceptLast.Aggregate(results, (p, c) => p.Add(c.Inward).Add(c.Outward));
                 if (lastEdge != null)
                 {
-                    results = results.Add(lastEdge.inward);
+                    results = results.Add(lastEdge.Inward);
                 }
             }
 
@@ -73,7 +68,7 @@ public class Day7
             {
                 workingGraph.TryGetOutEdges(desiredBagColor, out var edges);
                 edges ??= Enumerable.Empty<BagGraphEdge>();
-                return 1 + edges.Aggregate(0, (p, c) => p + (c.count * bagCosts[c.outward].Value));
+                return 1 + edges.Aggregate(0, (p, c) => p + (c.Count * bagCosts[c.Outward].Value));
             }
 
             foreach (var bagColor in workingGraph.TopologicalSort().Reverse())
@@ -110,24 +105,24 @@ public class Day7
 
         var parsedInputLines =
             (from line in inputLines
-             let lineSides = line.Split(arrow)
-             let inwardBagColor = new BagColor(lineSides[0].Trim())
-             let emptyBagTrailerMatch = lineSides[1].Matches(emptyBagTrailer).SingleOrDefault()
-             let nonEmptyBagTrailerMatches = lineSides[1].Matches(nonEmptyBagTrailer)
-             let outwardBagColorsAndQuantities = emptyBagTrailerMatch != null
+                let lineSides = line.Split(arrow)
+                let inwardBagColor = new BagColor(lineSides[0].Trim())
+                let emptyBagTrailerMatch = lineSides[1].Matches(emptyBagTrailer).SingleOrDefault()
+                let nonEmptyBagTrailerMatches = lineSides[1].Matches(nonEmptyBagTrailer)
+                let outwardBagColorsAndQuantities = emptyBagTrailerMatch != null
                     ? ImmutableList<BagGrouping>.Empty
                     : CaptureBagGroupings(nonEmptyBagTrailerMatches).ToImmutableList()
-             select (inwardBagColor, outwardBagColorsAndQuantities))
-             .ToImmutableDictionary(i => i.inwardBagColor, i => i.outwardBagColorsAndQuantities);
+                select (inwardBagColor, outwardBagColorsAndQuantities))
+            .ToImmutableDictionary(i => i.inwardBagColor, i => i.outwardBagColorsAndQuantities);
 
-        var uniqueBagColors = parsedInputLines.Aggregate(parsedInputLines.Keys.ToImmutableHashSet(), (p, c) => p.Union(c.Value.Select(i => i.color)));
+        var uniqueBagColors = parsedInputLines.Aggregate(parsedInputLines.Keys.ToImmutableHashSet(), (p, c) => p.Union(c.Value.Select(i => i.Color)));
         var bagEdges = (from inward in uniqueBagColors
-                        where parsedInputLines.ContainsKey(inward)
-                        let outwardsAndQuantities = parsedInputLines[inward]
-                        let edges = outwardsAndQuantities.Select(o => new BagGraphEdge(inward, o.color, o.count)).ToImmutableList().AsEnumerable()
-                        from edge in edges
-                        select edge)
-                       .ToImmutableHashSet();
+                where parsedInputLines.ContainsKey(inward)
+                let outwardsAndQuantities = parsedInputLines[inward]
+                let edges = outwardsAndQuantities.Select(o => new BagGraphEdge(inward, o.Color, o.Count)).ToImmutableList().AsEnumerable()
+                from edge in edges
+                select edge)
+            .ToImmutableHashSet();
         return (uniqueBagColors, bagEdges);
     }
 }

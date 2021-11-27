@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
+namespace AdventOfCode.Y2020.Day05;
 
 [TestFixture]
 public class Day5
 {
-    private IEnumerable<string> input;
+    private IReadOnlyList<string> input = null!;
 
     [SetUp]
     public async Task SetUp()
     {
-        input = (await System.IO.File.ReadAllLinesAsync("input.txt")).Where(l => l.Length == 10);
+        input = await new InputFileFacadeFacade().ReadAllLinesAsync().Where(l => l.Length == 10);
     }
 
     [Test(ExpectedResult = 908)]
@@ -32,9 +28,9 @@ public class Day5
     {
         var seatCoordinates = input.Select(l => (rowCoordinate: l.Substring(0, 7), columnCoordinate: l.Substring(7, 3)));
 
-        int calculateRowValue(string rowCoordinate)
+        int CalculateRowValue(string rowCoordinate)
         {
-            (int, int) aggregate((int, int) previous, char current)
+            (int, int) Aggregate((int, int) previous, char current)
             {
                 var halfSize = (previous.Item2 - previous.Item1) / 2;
                 return current switch
@@ -46,12 +42,12 @@ public class Day5
             }
 
             var valueRange = ((int)0, (int)127);
-            return rowCoordinate.Aggregate(valueRange, aggregate).Item1;
+            return rowCoordinate.Aggregate(valueRange, Aggregate).Item1;
         }
 
-        int calculateColumnValue(string columnCoordinate)
+        int CalculateColumnValue(string columnCoordinate)
         {
-            (int, int) aggregate((int, int) previous, char current)
+            (int, int) Aggregate((int, int) previous, char current)
             {
                 var halfSize = (previous.Item2 - previous.Item1) / 2;
                 return current switch
@@ -63,14 +59,14 @@ public class Day5
             }
 
             var valueRange = ((int)0, (int)7);
-            return columnCoordinate.Aggregate(valueRange, aggregate).Item1;
+            return columnCoordinate.Aggregate(valueRange, Aggregate).Item1;
         }
 
         return from s in seatCoordinates
-               let rowNumber = calculateRowValue(s.rowCoordinate)
-               let columnNumber = calculateColumnValue(s.columnCoordinate)
-               let seatId = (rowNumber * 8) + columnNumber
-               orderby seatId descending
-               select (s.rowCoordinate, s.columnCoordinate, seatId);
+            let rowNumber = CalculateRowValue(s.rowCoordinate)
+            let columnNumber = CalculateColumnValue(s.columnCoordinate)
+            let seatId = (rowNumber * 8) + columnNumber
+            orderby seatId descending
+            select (s.rowCoordinate, s.columnCoordinate, seatId);
     }
 }

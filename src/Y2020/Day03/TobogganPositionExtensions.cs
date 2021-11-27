@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using OneOf;
-using BottomOfMap = Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary;
-using TobogganPosition = Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette;
+using BottomOfMap = AdventOfCode.Y2020.Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary;
+using TobogganPosition = AdventOfCode.Y2020.Shared.Mapping.ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette;
 
 public record Slope(int right, int down);
 

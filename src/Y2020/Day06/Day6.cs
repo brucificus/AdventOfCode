@@ -1,21 +1,17 @@
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Shared;
+namespace AdventOfCode.Y2020.Day06;
 
 public class Day6
 {
-    private string input;
+    private IReadOnlyList<string> blocks = null!;
 
-    public record Passenger(ImmutableHashSet<char> answers);
-    public record PassengerGroup(ImmutableList<Passenger> passengers);
-    public record PassengerGroupSummary(ImmutableHashSet<char> answers);
+    public record Passenger(ImmutableHashSet<char> Answers);
+    public record PassengerGroup(ImmutableList<Passenger> Passengers);
+    public record PassengerGroupSummary(ImmutableHashSet<char> Answers);
 
     [SetUp]
     public async Task Setup()
     {
-        input = await System.IO.File.ReadAllTextAsync("input.txt");
+        blocks = await new InputFileFacadeFacade().ReadAllTextAsync().SplitOnEmptyLines();
     }
 
     [Test(ExpectedResult = 6726)]
@@ -23,11 +19,11 @@ public class Day6
     {
         var passengerGroups = ParsePassengerGroups();
         var passengerGroupSummaries =
-                                (from passengerGroup in passengerGroups
-                                 let summaryData = passengerGroup.passengers.Aggregate(ImmutableHashSet<char>.Empty, (p, c) => p.Union(c.answers))
-                                 select new PassengerGroupSummary(summaryData))
-                                .ToImmutableList();
-        return passengerGroupSummaries.Sum(pgs => pgs.answers.Count);
+            (from passengerGroup in passengerGroups
+                let summaryData = passengerGroup.Passengers.Aggregate(ImmutableHashSet<char>.Empty, (p, c) => p.Union(c.Answers))
+                select new PassengerGroupSummary(summaryData))
+            .ToImmutableList();
+        return passengerGroupSummaries.Sum(pgs => pgs.Answers.Count);
     }
 
     [Test(ExpectedResult = 3316)]
@@ -35,22 +31,22 @@ public class Day6
     {
         var passengerGroups = ParsePassengerGroups();
         var passengerGroupSummaries =
-                                (from passengerGroup in passengerGroups
-                                 let firstPassenger = passengerGroup.passengers.First()
-                                 let remainingPassengers = passengerGroup.passengers.Skip(1)
-                                 let summaryData = remainingPassengers.Aggregate(firstPassenger.answers, (p, c) => p.Intersect(c.answers))
-                                 select new PassengerGroupSummary(summaryData))
-                                .ToImmutableList();
-        return passengerGroupSummaries.Sum(pgs => pgs.answers.Count);
+            (from passengerGroup in passengerGroups
+                let firstPassenger = passengerGroup.Passengers.First()
+                let remainingPassengers = passengerGroup.Passengers.Skip(1)
+                let summaryData = remainingPassengers.Aggregate(firstPassenger.Answers, (p, c) => p.Intersect(c.Answers))
+                select new PassengerGroupSummary(summaryData))
+            .ToImmutableList();
+        return passengerGroupSummaries.Sum(pgs => pgs.Answers.Count);
     }
 
     private ImmutableList<PassengerGroup> ParsePassengerGroups()
     {
-        return (from block in input.SplitOnEmptyLines()
+        return (from block in blocks
                 let records = (from line in block.Trim().SplitOnNewlines()
-                               select new Passenger(line.ToImmutableHashSet()))
-                              .ToImmutableList()
+                        select new Passenger(line.ToImmutableHashSet()))
+                    .ToImmutableList()
                 select new PassengerGroup(records))
-                              .ToImmutableList();
+            .ToImmutableList();
     }
 }

@@ -1,94 +1,86 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OneOf;
+namespace AdventOfCode.Y2020.Shared.Mapping;
 
-namespace Shared.Mapping
+// semisesqui = 3/4s
+public interface ISemisesquiBoundedInfiniteIntegralPlane<TCellContent>
 {
-    // semisesqui = 3/4s
-    public interface ISemisesquiBoundedInfiniteIntegralPlane<TCellContent>
+
+    public readonly record struct Boundary;
+
+    public interface IPlanchette
     {
+        IPlanchette MoveRight();
 
-        public record Boundary;
+        OneOf<IPlanchette, Boundary> MoveDown();
 
-        public interface IPlanchette
-        {
-            IPlanchette MoveRight();
-
-            OneOf<IPlanchette, Boundary> MoveDown();
-
-            TCellContent Peek();
-        }
-
-        IPlanchette Origin { get; }
+        TCellContent Peek();
     }
 
-    public class TextualSemisesquiBoundedInfiniteIntegralPlane : ISemisesquiBoundedInfiniteIntegralPlane<char>
+    IPlanchette Origin { get; }
+}
+
+public class TextualSemisesquiBoundedInfiniteIntegralPlane : ISemisesquiBoundedInfiniteIntegralPlane<char>
+{
+    private readonly IReadOnlyList<string> _mapLines;
+    private readonly Lazy<int> _lazyPatternWidth;
+
+    private TextualSemisesquiBoundedInfiniteIntegralPlane(IReadOnlyList<string> mapLines)
     {
-        private readonly IReadOnlyList<string> _mapLines;
-        private readonly Lazy<int> _lazyPatternWidth;
+        _mapLines = mapLines;
+        _lazyPatternWidth = new Lazy<int>(() => _mapLines.Max(l => l.Length));
+    }
 
-        private TextualSemisesquiBoundedInfiniteIntegralPlane(IReadOnlyList<string> mapLines)
+    public int PatternWidth => _lazyPatternWidth.Value;
+
+    public int Height => _mapLines.Count;
+
+    public ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette Origin => new Planchette(this, 0, 0);
+
+    public static ISemisesquiBoundedInfiniteIntegralPlane<char> FromLines(IEnumerable<string> lines)
+    {
+        lines = lines.Select(l => l.Trim()).Where(l => l.Length > 0);
+        return new TextualSemisesquiBoundedInfiniteIntegralPlane(lines.ToList().AsReadOnly());
+    }
+
+    private class Planchette : ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette
+    {
+        private readonly TextualSemisesquiBoundedInfiniteIntegralPlane _map;
+        private readonly int _row;
+        private readonly int _column;
+
+        public Planchette(TextualSemisesquiBoundedInfiniteIntegralPlane map, int row, int column)
         {
-            _mapLines = mapLines;
-            _lazyPatternWidth = new Lazy<int>(() => _mapLines.Max(l => l.Length));
+            _map = map;
+            _row = row;
+            _column = column;
         }
 
-        public int PatternWidth => _lazyPatternWidth.Value;
-
-        public int Height => _mapLines.Count;
-
-        public ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette Origin => new Planchette(this, 0, 0);
-
-        public static async Task<ISemisesquiBoundedInfiniteIntegralPlane<char>> FromFileAsync(string path)
+        public OneOf<ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette, ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary> MoveDown()
         {
-            var lines = (await System.IO.File.ReadAllLinesAsync(path).ConfigureAwait(false)).AsEnumerable();
-            lines = lines.Select(l => l.Trim()).Where(l => l.Length > 0);
-            return new TextualSemisesquiBoundedInfiniteIntegralPlane(lines.ToList().AsReadOnly());
+            if (_row == (_map.Height - 1))
+            {
+                return new ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary();
+            }
+            else
+            {
+                return new Planchette(_map, _row + 1, _column);
+            }
         }
 
-        private class Planchette : ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette
+        public ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette MoveRight()
         {
-            private readonly TextualSemisesquiBoundedInfiniteIntegralPlane _map;
-            private readonly int _row;
-            private readonly int _column;
-
-            public Planchette(TextualSemisesquiBoundedInfiniteIntegralPlane map, int row, int column)
+            if (_column == (_map.PatternWidth - 1))
             {
-                _map = map;
-                _row = row;
-                _column = column;
+                return new Planchette(_map, _row, 0);
             }
-
-            public OneOf<ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette, ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary> MoveDown()
+            else
             {
-                if (_row == (_map.Height - 1))
-                {
-                    return new ISemisesquiBoundedInfiniteIntegralPlane<char>.Boundary();
-                }
-                else
-                {
-                    return new Planchette(_map, _row + 1, _column);
-                }
+                return new Planchette(_map, _row, _column + 1);
             }
+        }
 
-            public ISemisesquiBoundedInfiniteIntegralPlane<char>.IPlanchette MoveRight()
-            {
-                if (_column == (_map.PatternWidth - 1))
-                {
-                    return new Planchette(_map, _row, 0);
-                }
-                else
-                {
-                    return new Planchette(_map, _row, _column + 1);
-                }
-            }
-
-            public char Peek()
-            {
-                return _map._mapLines[_row][_column];
-            }
+        public char Peek()
+        {
+            return _map._mapLines[_row][_column];
         }
     }
 }

@@ -1,21 +1,14 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using Shared;
-using static System.IO.File;
+namespace AdventOfCode.Y2020.Day01;
 
 [TestFixture]
 public class Day1
 {
-    private IEnumerable<int> values;
+    private IReadOnlyList<int> values = null!;
 
     [SetUp]
     public async Task SetUp()
     {
-        values = (await ReadAllLinesAsync("input.txt"))
-                .Where(v => v is string { Length: > 0 })
-                .Select(v => int.Parse(v));
+        values = await new InputFileFacadeFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty).Select(int.Parse);
     }
 
     [Test(ExpectedResult = 786811)]
