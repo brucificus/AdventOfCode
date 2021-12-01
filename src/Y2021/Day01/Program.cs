@@ -3,18 +3,19 @@ await NUnitApplication.CreateBuilder().Build().RunAsync();
 [TestFixture]
 public partial class Program
 {
-    private IReadOnlyList<string> lines = null!;
+    private IReadOnlyList<int> values = null!;
 
     [SetUp]
     public async Task SetUp()
     {
-        lines = await new InputFileFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty);
+        values = await new InputFileFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty).Select(int.Parse);
     }
 
-    [Test(ExpectedResult = "")]
-    public string Part1()
+    [Test]
+    public void Part1()
     {
-        throw new NotImplementedException();
+        var depthIncreases = Enumerable.Range(1, values.Count - 1).Select(i => values[i] > values[i - 1]).Count(v => v);
+        depthIncreases.Should().Be(7);
     }
 
     [Test(ExpectedResult = "")]
