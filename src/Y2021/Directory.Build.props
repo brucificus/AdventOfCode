@@ -9,6 +9,7 @@
     <AdventOfCodeYear>Y2021</AdventOfCodeYear>
     <AssemblyName>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>AdventOfCode.$(AdventOfCodeYear).$(MSBuildProjectName)</RootNamespace>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
@@ -20,6 +21,7 @@
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
+    <PackageReference Include="System.Runtime.Experimental" Version="6.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="OneOf" Version="3.0.203" />
