@@ -14,13 +14,17 @@ public partial class Program
     [Test]
     public void Part1()
     {
-        var depthIncreases = Enumerable.Range(1, values.Count - 1).Select(i => values[i] > values[i - 1]).Count(v => v);
-        depthIncreases.Should().Be(7);
+        var slidingWindow = values.Buffer(2, 1).Where(b => b.Count == 2);
+        var depthIncreases = slidingWindow.Select(b => b[1] > b[0]).Count(v => v);
+        depthIncreases.Should().Be(1162);
     }
 
-    [Test(ExpectedResult = "")]
-    public string Part2()
+    [Test]
+    public void Part2()
     {
-        throw new NotImplementedException();
+        var rollingSumsWindow = values.Buffer(3, 1).Where(b => b.Count == 3).Select(b => b.Sum());
+        var sumsComparisonWindow = rollingSumsWindow.Buffer(2, 1).Where(b => b.Count == 2);
+        var depthIncreases = sumsComparisonWindow.Select(b => b[1] > b[0]).Count(v => v);
+        depthIncreases.Should().Be(1190);
     }
 }

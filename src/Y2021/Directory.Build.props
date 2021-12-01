@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
@@ -49,6 +50,7 @@
   <ItemGroup>
     <Using Include="System.Collections.Immutable" />
     <Using Include="System.Numerics" />
+    <Using Include="System.Reactive.Linq" />
     <Using Include="OneOf" />
     <Using Include="AdventOfCode.Y2020.Shared" />
     <Using Include="AdventOfCode.Y2020.Shared.Hosting.NUnit" />
