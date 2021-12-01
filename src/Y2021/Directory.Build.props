@@ -23,6 +23,7 @@
     <PackageReference Include="System.Interactive" Version="5.0.0" />
     <PackageReference Include="System.Runtime.Experimental" Version="6.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+    <PackageReference Include="FluentAssertions" Version="6.2.0"/>
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="OneOf" Version="3.0.203" />
     <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
@@ -33,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">
-    <PackageReference Include="FluentAssertions" Version="6.2.0"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.0.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
@@ -41,6 +41,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Y2020\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('sampleInput.txt')">
+    <None Include="sampleInput.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup Condition="Exists('input.txt')">

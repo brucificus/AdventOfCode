@@ -1,32 +1,41 @@
+using TPart1InputParsed = System.Collections.Generic.IReadOnlyList<int>;
+using TPart1Answer = System.Int32;
+using TPart2InputParsed = System.Collections.Generic.IReadOnlyList<int>;
+using TPart2Answer = System.Int32;
+
+
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
-[TestFixture]
-public partial class Program
+
+[TestFixture(Description = "Day01")]
+public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2InputParsed, TPart2Answer>
 {
-    private IReadOnlyList<int> values = null!;
+    protected override TPart1InputParsed ParseInputForPart1(IReadOnlyList<string> lines) =>
+        lines.WhereNot(string.IsNullOrEmpty).Select(int.Parse);
 
-    [SetUp]
-    public async Task SetUp()
-    {
-        values = await new InputFileFacade().ReadAllLinesAsync().WhereNot(string.IsNullOrEmpty).Select(int.Parse);
-    }
+    protected override TPart1Answer Part1AnswerSample => 7;
+    protected override TPart1Answer Part1AnswerActual => 1162;
 
-    [Test]
-    public void Part1()
+    protected override TPart1Answer Part1Solver(IReadOnlyList<int> input)
     {
-        var slidingWindow = values.BufferWithoutPartials(2, 1);
+        var slidingWindow = input.BufferWithoutPartials(2, 1);
         var depthIncreases = slidingWindow.Select(b => b[1] > b[0]).Count(v => v);
-
-        depthIncreases.Should().Be(1162);
+        return depthIncreases;
     }
 
-    [Test]
-    public void Part2()
+
+
+    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) =>
+        ParseInputForPart1(lines);
+
+    protected override TPart2Answer Part2AnswerSample => 5;
+    protected override TPart2Answer Part2AnswerActual => 1190;
+
+    protected override TPart2Answer Part2Solver(IReadOnlyList<int> input)
     {
-        var rollingSumsWindow = values.BufferWithoutPartials(3, 1).Select(b => b.Sum<int, int>());
+        var rollingSumsWindow = input.BufferWithoutPartials(3, 1).Select(b => b.Sum<int, int>());
         var sumsComparisonWindow = rollingSumsWindow.BufferWithoutPartials(2, 1);
         var depthIncreases = sumsComparisonWindow.Select(b => b[1] > b[0]).Count(v => v);
-
-        depthIncreases.Should().Be(1190);
+        return depthIncreases;
     }
 }
