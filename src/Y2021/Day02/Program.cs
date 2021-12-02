@@ -20,8 +20,7 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
         lines.WhereNot(string.IsNullOrEmpty).Select(MotionCommand.Parse);
 
     protected override TPart1Answer Part1AnswerSample => 150;
-    // TODO: Step 06: Record challenge-confirmed discovered answer for Part 1. Commit.
-    protected override TPart1Answer Part1AnswerActual => throw new NotImplementedException("Part 1 Actual Answer");
+    protected override TPart1Answer Part1AnswerActual => 1936494;
 
     protected override TPart1Answer Part1Solver(TPart1InputParsed input)
     {
@@ -34,6 +33,7 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
                 MotionDirection.ForwardHorizontalIncrease => p with { horizontal = p.horizontal + (int)c.Units },
                 MotionDirection.UpDepthDecrease => p with { depth = p.depth - (int)c.Units },
                 MotionDirection.DownDepthIncrease => p with { depth = p.depth + (int)c.Units },
+                _ => throw new ArgumentOutOfRangeException()
             });
 
         var coordinatesProduct = finalPosition.horizontal * finalPosition.depth;
@@ -69,7 +69,7 @@ public record MotionCommand(MotionDirection Direction, uint Units)
             "forward" => MotionDirection.ForwardHorizontalIncrease,
             "down" => MotionDirection.DownDepthIncrease,
             "up" => MotionDirection.UpDepthDecrease,
-            _ => throw new ArgumentException()
+            _ => throw new ArgumentOutOfRangeException()
         };
         var motionUnits = uint.Parse(lineSplit[1]);
         return new MotionCommand(motionDirection, motionUnits);
