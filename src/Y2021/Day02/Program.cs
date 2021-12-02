@@ -1,17 +1,9 @@
 using TPart1InputParsed = System.Collections.Generic.IReadOnlyList<MotionCommand>;
 using TPart1Answer = System.Int32;
-// TODO: Step 07: Set input/output types for Part 2.
-using TPart2InputParsed = System.Collections.Generic.IReadOnlyList<Undefined>;
-using TPart2Answer = Undefined;
+using TPart2InputParsed = System.Collections.Generic.IReadOnlyList<AimCommand>;
+using TPart2Answer = System.Int32;
 
 await NUnitApplication.CreateBuilder().Build().RunAsync();
-
-public enum MotionDirection
-{
-    ForwardHorizontalIncrease,
-    DownDepthIncrease,
-    UpDepthDecrease
-}
 
 [TestFixture(Description = "Day02")]
 public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2InputParsed, TPart2Answer>
@@ -39,24 +31,45 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
         var coordinatesProduct = finalPosition.horizontal * finalPosition.depth;
         return coordinatesProduct;
     }
-    // TODO: Step 05: Refine solver for Part 1's actual input data.
 
 
 
-    // TODO: Step 08: Parse input for Part 2.
-    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) => default!;
+    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) =>
+        lines.WhereNot(string.IsNullOrEmpty).Select(AimCommand.Parse);
 
-    // TODO: Step 09: Record challenge-provided answer for the sample for Part 2.
-    protected override TPart2Answer Part2AnswerSample => throw new NotImplementedException("Part 2 Sample Answer");
+    protected override TPart2Answer Part2AnswerSample => 900;
     // TODO: Step 12: Record challenge-confirmed discovered answer for Part 2. Commit.
     protected override TPart2Answer Part2AnswerActual => throw new NotImplementedException("Part 2 Actual Answer");
 
     // TODO: Step 10: Write solver for Part 2's sample. Commit.
     protected override TPart2Answer Part2Solver(TPart2InputParsed input)
     {
-        throw new NotImplementedException("Part 2 Solver");
+        var origin = (depth: 0, horizontal: 0, aim: 0);
+
+        var finalPosition = input.Aggregate(
+            origin,
+            (tuple, command) => command.Direction switch
+            {
+                AimDirection.ForwardIncreaseHorizontalAndSkewDepth => tuple with
+                {
+                    horizontal = tuple.horizontal + (int)command.Units, depth = tuple.depth + (tuple.aim * (int)command.Units)
+                },
+                AimDirection.UpDecreaseAim => tuple with { aim = tuple.aim - (int)command.Units },
+                AimDirection.DownIncreaseAim => tuple with { aim = tuple.aim + (int)command.Units },
+                _ => throw new ArgumentOutOfRangeException()
+            });
+
+        var coordinatesProduct = finalPosition.horizontal * finalPosition.depth;
+        return coordinatesProduct;
     }
     // TODO: Step 11: Refine solver for Part 2's actual input data.
+}
+
+public enum MotionDirection
+{
+    ForwardHorizontalIncrease,
+    DownDepthIncrease,
+    UpDepthDecrease
 }
 
 public record MotionCommand(MotionDirection Direction, uint Units)
@@ -73,5 +86,29 @@ public record MotionCommand(MotionDirection Direction, uint Units)
         };
         var motionUnits = uint.Parse(lineSplit[1]);
         return new MotionCommand(motionDirection, motionUnits);
+    }
+}
+
+public enum AimDirection
+{
+    ForwardIncreaseHorizontalAndSkewDepth,
+    DownIncreaseAim,
+    UpDecreaseAim
+}
+
+public record AimCommand(AimDirection Direction, uint Units)
+{
+    public static AimCommand Parse(string line)
+    {
+        var lineSplit = line.Split(' ');
+        var motionDirection = lineSplit[0] switch
+        {
+            "forward" => AimDirection.ForwardIncreaseHorizontalAndSkewDepth,
+            "down" => AimDirection.DownIncreaseAim,
+            "up" => AimDirection.UpDecreaseAim,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        var motionUnits = uint.Parse(lineSplit[1]);
+        return new AimCommand(motionDirection, motionUnits);
     }
 }
