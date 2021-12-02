@@ -33,8 +33,7 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
 
 
     // TODO: Step 08: Parse input for Part 2.
-    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) =>
-        ParseInputForPart1(lines);
+    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) => default;
 
     // TODO: Step 09: Record challenge-provided answer for the sample for Part 2.
     protected override TPart2Answer Part2AnswerSample => throw new NotImplementedException("Part 2 Sample Answer");
