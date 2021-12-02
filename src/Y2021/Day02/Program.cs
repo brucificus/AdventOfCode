@@ -38,10 +38,8 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
         lines.WhereNot(string.IsNullOrEmpty).Select(AimCommand.Parse);
 
     protected override TPart2Answer Part2AnswerSample => 900;
-    // TODO: Step 12: Record challenge-confirmed discovered answer for Part 2. Commit.
-    protected override TPart2Answer Part2AnswerActual => throw new NotImplementedException("Part 2 Actual Answer");
+    protected override TPart2Answer Part2AnswerActual => 1997106066;
 
-    // TODO: Step 10: Write solver for Part 2's sample. Commit.
     protected override TPart2Answer Part2Solver(TPart2InputParsed input)
     {
         var origin = (depth: 0, horizontal: 0, aim: 0);
@@ -62,7 +60,6 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
         var coordinatesProduct = finalPosition.horizontal * finalPosition.depth;
         return coordinatesProduct;
     }
-    // TODO: Step 11: Refine solver for Part 2's actual input data.
 }
 
 public enum MotionDirection
