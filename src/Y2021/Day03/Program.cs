@@ -13,7 +13,7 @@ public partial class Program : TestableSolverBase<TPart1InputParsed, TPart1Answe
         lines.WhereNot(string.IsNullOrEmpty).Select(l => l.ToCharArray()).ToArray();
 
     protected override TPart1Answer Part1AnswerSample => 198;
-    protected override TPart1Answer Part1AnswerActual => throw new NotImplementedException("Part 1 Actual Answer");
+    protected override TPart1Answer Part1AnswerActual => 3148794;
 
     protected override TPart1Answer Part1Solver(TPart1InputParsed input)
     {
