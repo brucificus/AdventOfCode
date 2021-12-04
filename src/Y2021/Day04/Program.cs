@@ -1,13 +1,8 @@
-using System.Runtime.InteropServices.ComTypes;
-using TPart2InputParsed = System.Collections.Generic.IReadOnlyList<Undefined>;
-using TPart2Answer = Undefined;
-
-
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
 
 [TestFixture(Description = "Day04")]
-public partial class Program : TestableSolverBase<BingoRunInputs, Part1Answer, TPart2InputParsed, TPart2Answer>
+public partial class Program : TestableSolverBase<BingoRunInputs, Part1Answer, BingoRunInputs, Part2Answer>
 {
     protected override BingoRunInputs ParseInputForPart1(IReadOnlyList<string> lines) =>
         BingoRunInputs.ParseLines(lines.ToImmutableList());
@@ -37,15 +32,37 @@ public partial class Program : TestableSolverBase<BingoRunInputs, Part1Answer, T
         throw new InvalidOperationException("Unexpected fall-through");
     }
 
-    protected override TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) => default!;
+    protected override BingoRunInputs ParseInputForPart2(IReadOnlyList<string> lines) => ParseInputForPart1(lines);
 
-    protected override TPart2Answer Part2AnswerSample => throw new NotImplementedException("Part 2 Sample Answer");
-    protected override TPart2Answer Part2AnswerActual => throw new NotImplementedException("Part 2 Actual Answer");
+    protected override Part2Answer Part2AnswerSample => new(1924);
+    protected override Part2Answer Part2AnswerActual => new(8468);
 
-    protected override TPart2Answer Part2Solver(TPart2InputParsed input)
+    protected override Part2Answer Part2Solver(BingoRunInputs input)
     {
-        throw new NotImplementedException("Part 2 Solver");
+        var (drawings, unmarkedCards) = input;
+
+        var cards = unmarkedCards.Select(BingoCardRunState.StartingFor).ToImmutableArray();
+        var winningCards = ImmutableList<BingoCardRunState>.Empty;
+        foreach (var drawing in drawings)
+        {
+            cards = cards.Select(c => c.WithMark(drawing)).ToImmutableArray();
+
+            var possiblyWinningCards = cards.Where(c => c.Bingo).ToImmutableArray();
+            winningCards = winningCards.AddRange(possiblyWinningCards);
+            cards = cards.Except(possiblyWinningCards).ToImmutableArray();
+
+            if (!cards.Any())
+            {
+                var mostLosingestCard = winningCards.Last();
+                var unmarkedValueSumsMostLosingestCard = mostLosingestCard.ValuesUnmarked.Select(v => v.Value).Sum();
+                var scoreOfMostLosingestCard = unmarkedValueSumsMostLosingestCard * drawing.Value;
+                return new Part2Answer(scoreOfMostLosingestCard);
+            }
+        }
+
+        throw new InvalidOperationException("Unexpected fall-through");
     }
 }
 
 public readonly record struct Part1Answer(int Value);
+public readonly record struct Part2Answer(int Value);
