@@ -13,7 +13,7 @@ public partial class Program : TestableSolverBase<BingoRunInputs, Part1Answer, T
         BingoRunInputs.ParseLines(lines.ToImmutableList());
 
     protected override Part1Answer Part1AnswerSample => new(4512);
-    protected override Part1Answer Part1AnswerActual => throw new NotImplementedException("Part 1 Actual Answer");
+    protected override Part1Answer Part1AnswerActual => new(39984);
 
     protected override Part1Answer Part1Solver(BingoRunInputs input)
     {
