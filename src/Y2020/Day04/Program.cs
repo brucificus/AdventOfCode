@@ -59,12 +59,12 @@ public partial class Program
     private IEnumerable<ImmutableDictionary<string, string>> Part1ValidRecords()
     {
         var records = (from block in input.SplitOnEmptyLines()
-                let blockPieces = block.Split(new Regex("\\s+")).Where(s => !string.IsNullOrWhiteSpace(s))
-                let parsedBlockPieces =
-                    from blockPiece in blockPieces
-                    let blockPieceParts = blockPiece.Split(':')
-                    select (fieldName: blockPieceParts[0], fieldValue: blockPieceParts[1])
-                select parsedBlockPieces.ToImmutableDictionary(t => t.fieldName, t => t.fieldValue))
+                       let blockPieces = block.Split(new Regex("\\s+")).Where(s => !string.IsNullOrWhiteSpace(s))
+                       let parsedBlockPieces =
+                           from blockPiece in blockPieces
+                           let blockPieceParts = blockPiece.Split(':')
+                           select (fieldName: blockPieceParts[0], fieldValue: blockPieceParts[1])
+                       select parsedBlockPieces.ToImmutableDictionary(t => t.fieldName, t => t.fieldValue))
             .ToImmutableList();
 
         var requiredFields = new[] { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid" };

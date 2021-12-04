@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
-using QuickGraph;
-using QuickGraph.Algorithms;
+using FastGraph;
+using FastGraph.Algorithms;
 
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
@@ -9,7 +9,7 @@ public partial class Program
     private IReadOnlyList<string> inputLines = null!;
     public record BagColor(string Value);
     public record BagGrouping(int Count, BagColor Color);
-    public record BagGraphEdge(BagColor Inward, BagColor Outward, int Count) : QuickGraph.IEdge<BagColor>
+    public record BagGraphEdge(BagColor Inward, BagColor Outward, int Count) : FastGraph.IEdge<BagColor>
     {
         BagColor IEdge<BagColor>.Source => this.Inward;
 

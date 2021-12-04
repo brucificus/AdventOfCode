@@ -1,5 +1,5 @@
-using QuickGraph;
-using QuickGraph.Algorithms;
+using FastGraph;
+using FastGraph.Algorithms;
 
 namespace AdventOfCode.Y2020.Shared;
 

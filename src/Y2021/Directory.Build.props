@@ -26,7 +26,8 @@
     <PackageReference Include="FluentAssertions" Version="6.2.0"/>
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="OneOf" Version="3.0.203" />
-    <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+    <PackageReference Include="FastGraph" Version="3.0.0-alpha.1614" />
+    <PackageReference Include="FastGraph.Graphviz" Version="3.0.0-alpha.1614" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(MSBuildProjectName)' != 'Shared'">

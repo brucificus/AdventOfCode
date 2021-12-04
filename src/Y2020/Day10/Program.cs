@@ -1,6 +1,6 @@
-using QuickGraph;
-using QuickGraph.Algorithms;
-using QuickGraph.Graphviz;
+using FastGraph;
+using FastGraph.Algorithms;
+using FastGraph.Graphviz;
 
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
