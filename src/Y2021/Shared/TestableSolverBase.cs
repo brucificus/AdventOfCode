@@ -32,36 +32,36 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     [SetUp]
     public async Task SetUp()
     {
-        _part1InputSample = ParseInputForPart1(await new SampleInputFacade().ReadAllLinesAsync());
-        _part1InputActual = ParseInputForPart1(await new InputFileFacade().ReadAllLinesAsync());
-        _part2InputSample = ParseInputForPart2(await new SampleInputFacade().ReadAllLinesAsync());
-        _part2InputActual = ParseInputForPart2(await new InputFileFacade().ReadAllLinesAsync());
     }
 
     [Test]
-    public void Part1Sample()
+    public async Task Part1Sample()
     {
+        _part1InputSample = ParseInputForPart1(await new SampleInputFacade().ReadAllLinesAsync());
         var actualAnswer = Part1Solver(_part1InputSample!);
         actualAnswer.Should().Be(Part1AnswerSample);
     }
 
     [Test]
-    public void Part1Actual()
+    public async Task Part1Actual()
     {
+        _part1InputActual = ParseInputForPart1(await new InputFileFacade().ReadAllLinesAsync());
         var actualAnswer = Part1Solver(_part1InputActual!);
         actualAnswer.Should().Be(Part1AnswerActual);
     }
 
     [Test]
-    public void Part2Sample()
+    public async Task Part2Sample()
     {
+        _part2InputSample = ParseInputForPart2(await new SampleInputFacade().ReadAllLinesAsync());
         var actualAnswer = Part2Solver(_part2InputSample!);
         actualAnswer.Should().Be(Part2AnswerSample);
     }
 
     [Test]
-    public void Part2Actual()
+    public async Task Part2Actual()
     {
+        _part2InputActual = ParseInputForPart2(await new InputFileFacade().ReadAllLinesAsync());
         var actualAnswer = Part2Solver(_part2InputActual!);
         actualAnswer.Should().Be(Part2AnswerActual);
     }
