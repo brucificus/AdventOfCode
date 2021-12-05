@@ -1,3 +1,4 @@
+
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
 public readonly record struct Part1InputParsed;
@@ -5,7 +6,7 @@ public readonly record struct Part1Answer;
 public readonly record struct Part2InputParsed;
 public readonly record struct Part2Answer;
 
-[TestFixture(Description = "DayXX")]
+[TestFixture(Description = "Day06")]
 public partial class Program : TestableSolverBase<Part1InputParsed, Part1Answer, Part2InputParsed, Part2Answer>
 {
     protected override Part1InputParsed ParseInputForPart1(IReadOnlyList<string> lines) =>
