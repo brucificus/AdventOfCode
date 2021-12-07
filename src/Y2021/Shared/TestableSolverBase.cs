@@ -13,9 +13,15 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     private TPart2InputParsed? _part2InputSample;
     private TPart2InputParsed? _part2InputActual;
 
-    protected abstract TPart1InputParsed ParseInputForPart1(IReadOnlyList<string> lines);
+    protected virtual TPart1InputParsed ParseInputForPart1(IReadOnlyList<string> lines) =>
+        throw new IgnoreException("NotImplemented: ParseInputForPart1");
+    protected virtual TPart1InputParsed ParseInputForPart1Sample(IReadOnlyList<string> lines) => ParseInputForPart1(lines);
+    protected virtual TPart1InputParsed ParseInputForPart1Actual(IReadOnlyList<string> lines) => ParseInputForPart1(lines);
 
-    protected abstract TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines);
+    protected virtual TPart2InputParsed ParseInputForPart2(IReadOnlyList<string> lines) =>
+        throw new IgnoreException("NotImplemented: ParseInputForPart2");
+    protected virtual TPart2InputParsed ParseInputForPart2Sample(IReadOnlyList<string> lines) => ParseInputForPart2(lines);
+    protected virtual TPart2InputParsed ParseInputForPart2Actual(IReadOnlyList<string> lines) => ParseInputForPart2(lines);
 
     protected abstract TPart1Answer Part1Solver(TPart1InputParsed input);
 
@@ -37,7 +43,7 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     [Test]
     public async Task Part1Sample()
     {
-        _part1InputSample = ParseInputForPart1(await new SampleInputFacade().ReadAllLinesAsync());
+        _part1InputSample = ParseInputForPart1Sample(await new SampleInputFacade().ReadAllLinesAsync());
         var actualAnswer = Part1Solver(_part1InputSample!);
         actualAnswer.Should().Be(Part1AnswerSample);
     }
@@ -45,7 +51,7 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     [Test]
     public async Task Part1Actual()
     {
-        _part1InputActual = ParseInputForPart1(await new InputFileFacade().ReadAllLinesAsync());
+        _part1InputActual = ParseInputForPart1Actual(await new InputFileFacade().ReadAllLinesAsync());
         var actualAnswer = Part1Solver(_part1InputActual!);
         actualAnswer.Should().Be(Part1AnswerActual);
     }
@@ -53,7 +59,7 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     [Test]
     public async Task Part2Sample()
     {
-        _part2InputSample = ParseInputForPart2(await new SampleInputFacade().ReadAllLinesAsync());
+        _part2InputSample = ParseInputForPart2Sample(await new SampleInputFacade().ReadAllLinesAsync());
         var actualAnswer = Part2Solver(_part2InputSample!);
         actualAnswer.Should().Be(Part2AnswerSample);
     }
@@ -61,7 +67,7 @@ public abstract class TestableSolverBase<TPart1InputParsed, TPart1Answer, TPart2
     [Test]
     public async Task Part2Actual()
     {
-        _part2InputActual = ParseInputForPart2(await new InputFileFacade().ReadAllLinesAsync());
+        _part2InputActual = ParseInputForPart2Actual(await new InputFileFacade().ReadAllLinesAsync());
         var actualAnswer = Part2Solver(_part2InputActual!);
         actualAnswer.Should().Be(Part2AnswerActual);
     }
