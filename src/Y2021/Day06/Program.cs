@@ -44,7 +44,7 @@ public partial class Program : TestableSolverBase<Part1InputParsed, Part1Answer,
 
     protected override Part1Answer Part1AnswerSample => new(5934);
 
-    protected override Part1Answer Part1AnswerActual => throw new IgnoreException("NotImplemented: Part 1 Actual Answer");
+    protected override Part1Answer Part1AnswerActual => new(359999);
 
 
 
