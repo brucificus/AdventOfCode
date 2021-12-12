@@ -1,5 +1,5 @@
 using AdventOfCode.Y2020.Shared.Mapping;
-using Map = AdventOfCode.Y2020.Shared.Mapping.IPopulatedFullyBoundedPlane<int, char>;
+using Map = AdventOfCode.Y2020.Shared.Mapping.DenseFullyBoundedIntegralPlane<char>;
 
 await NUnitApplication.CreateBuilder().Build().RunAsync();
 
@@ -16,7 +16,7 @@ public partial class Program
     public async Task Setup()
     {
         static char ParseCell(char c) => c;
-        _initialMap = DenseFullyBoundedIntegralPlane<char>.FromLines(await new InputFileFacade().ReadAllLinesAsync(), ParseCell);
+        _initialMap = Map.FromLines(await new InputFileFacade().ReadAllLinesAsync(), ParseCell);
     }
 
     [Test(ExpectedResult = 2113)]
@@ -81,10 +81,10 @@ public partial class Program
     private static Map ProximitySeatingRule(Map input)
     {
         var newMapCells =
-            from window in input.Scan(new Vector2<int>(3, 3))
-            let center = window.Single(c => c.coordinate == window.Center)
+            from locatedSeat in input
+            let center = locatedSeat
             let currentSeatState = center.cell
-            let surrounding = window.Where(c => c.coordinate != window.Center)
+            let surrounding = input.SelectAdjacents(locatedSeat.coordinate)
             let surroundingOccupied = surrounding.Count(c => c.cell == occupiedSeat)
             let newSeatState = currentSeatState switch
             {
@@ -94,7 +94,7 @@ public partial class Program
                 _ => throw new InvalidOperationException()
             }
             select (center.coordinate, cell: newSeatState);
-        return DenseFullyBoundedIntegralPlane<char>.FromTuples(newMapCells);
+        return Map.FromTuples(newMapCells);
     }
 
     private static void Print(int i, Map map)

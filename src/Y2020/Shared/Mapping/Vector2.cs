@@ -5,7 +5,7 @@ namespace AdventOfCode.Y2020.Shared.Mapping;
 /// I really wanted to use <see cref="System.Numerics.Vector{int}"/>, but its constructor is hard to use correctly because it isn't really designed for direct use.
 /// <see cref="System.Numerics.Vector2" /> would have also been cool to use, except it is floating point.
 /// </remarks>
-public record Vector2<TDimension>(TDimension x, TDimension y)
+public readonly record struct Vector2<TDimension>(TDimension x, TDimension y)
 #pragma warning restore RCS1139 // Add summary element to documentation comment.
     where TDimension : struct, IComparable<TDimension>, IEquatable<TDimension>
 {
